@@ -1,3 +1,5 @@
+import {findMeasurement, measurementToken} from './measurement-catalog';
+
 export type ClinicalValue = string | number | boolean | null | ClinicalValue[] | {[key: string]: ClinicalValue};
 export type ClinicalFile = {id: string; name: string; mime: string; size: number};
 export type ClinicalRecord = {
@@ -27,10 +29,9 @@ function token(label: string): string {
 }
 
 function measurement(label: string) {
-  const key = token(label);
-  // Only spelling/format aliases; no fuzzy clinical or unit conversions.
-  if (key === 'bp' || key === 'bloodpressure') return {key: 'bloodpressure', label: 'Blood pressure'};
-  return {key, label: humanLabel(label)};
+  const definition = findMeasurement(label);
+  // Exact preset aliases only; pulse/heart rate and distinct lab tests remain separate.
+  return {key: measurementToken(definition?.key || label), label: definition?.key || humanLabel(label)};
 }
 
 export function recordId(record: ClinicalRecord): string {

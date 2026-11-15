@@ -4,10 +4,10 @@ Checked on Windows with Python 3.14, Node 26.13.1, Microsoft Edge, and the locke
 
 ## Automated results
 
-- **Backend: 16 tests passed.** `..\.venv\Scripts\python.exe -m pytest tests -q`
+- **Backend: 18 tests passed.** `..\.venv\Scripts\python.exe -m pytest tests -q`
 - **Frontend production build passed.** `npm run build`
 - **TypeScript check passed.** `npm run typecheck`
-- **Frontend checks passed: 8 summary-model tests and 6 browser scenarios.** Browser checks used the production build with an isolated dataset in `.data/e2e-patient-fields-final/`; model tests run through the same `npm run test:e2e` command.
+- **Frontend checks passed: 16 model tests and 8 browser scenarios (24 total).** The latest full suite passed against the production build with isolated data in `.data/e2e-measurements-final/`, through `npm run test:e2e`. Earlier detailed-seed checks used `.data/full-data-preview/`.
 
 The backend suite checks:
 
@@ -30,9 +30,11 @@ One upstream Starlette test-client deprecation warning is emitted for `httpx`; t
 
 ## Manual/script checks
 
-The seed CLI was run twice against an isolated dataset with 24 patients: both runs reported **2 hospitals, 24 patients, 25 visits, 26 versions**, with no duplicated rows. Reset then backed up all three SQLite files and rebuilt that isolated dataset with **12 patients, 13 visits, and 14 versions**. The ordinary demo database was not reset. A Windows file-lock issue found during this check was corrected by explicitly closing backup connections before replacing files.
+The detailed seed CLI was run twice against an isolated dataset: both runs reported **2 hospitals, 8 patients, 32 visits, 48 versions, and 16 PDF reports**, with no duplicated rows. A dedicated seed test checks chart completeness, historical dates, doctor attribution, local database copies, four enrolled patient accounts, one pending request, PDF signatures/hashes, idempotence, and correct pre-procedure chronology. The upload API rejects attempts to supply the seed builder's historical timestamp override.
 
-The PowerShell seed wrapper and `run.ps1` were also executed successfully. The launcher started a healthy API and frontend using the clean ordinary dataset: **8 patients, 9 visits, 10 versions, no requests/transfers**. The proxied health route and homepage returned successfully. Screenshots of the hospital dashboard, patient OTP, translation inspector, and mobile dashboard are generated under `.data/screenshots/`; the desktop and mobile dashboards were visually inspected locally.
+At the user's request, the ordinary demo database was replaced with this detailed dataset. All three previous database files were backed up under `.data/backups/` and passed SQLite integrity checks before any old file was removed. The original backup contains **10 patients, 11 visits, 12 versions, and 2 transfers**. Restoration instructions are saved alongside the backups in `README.txt`. The reset and launcher PowerShell scripts completed successfully, and startup did not duplicate the new records.
+
+The live replacement dataset contains **8 patients, 32 visits, 48 versions, 16 reports, one pending request, and no completed transfers**. A read-only browser check verifies Sarah's detailed visit notes, six cross-hospital blood-pressure snapshots, allergy list, authenticated PDF download, and pending consent request. Existing hospital credentials and Sarah's login remain available. Other workspace projects were not modified.
 
 The transfer uses an on-disk central database with an attached on-disk hospital database and rollback journals, rather than WAL. This is the local configuration in which SQLite supports transactions across attached databases; see the [SQLite ATTACH documentation](https://www.sqlite.org/lang_attach.html). The failure-injection test covers the application's rollback behavior. It does not establish a distributed transaction guarantee for remote EHR systems or test power-loss recovery.
 
@@ -57,3 +59,11 @@ The added browser scenario creates a 2025 Valley blood-pressure record, a curren
 The existing official-FHIR browser scenario also checks its patient's plain-language observation card and absence of raw JSON in the summary. Screenshots were generated for the readable dashboard, blood-pressure history, and mobile history under `.data/screenshots/` and the desktop summary/history were visually inspected. No backend/schema or existing demo patient data changes were required for this display change.
 
 A separate read-only browser smoke against the ordinary development server verifies the summary, field history, source viewer, and mobile width with no browser runtime errors. The normal demo dataset is preserved; test uploads were made only to isolated test databases.
+
+## Measurement forms and autocomplete
+
+The JSON observation textarea is replaced by 97 preset fields in 13 expandable categories, with value/unit inputs, paired blood-pressure inputs, optional context, and a searchable Other/custom field option. Suggestions match names/abbreviations and previously recorded keys from the hospital's authorized patient records. No external autocomplete service is called.
+
+Eight measurement-model checks verify blank fields produce no invented values, numeric SpO2 and zero become valid stored text, half-entered BP and invalid numeric input give field-specific errors, unchanged original keys/units/context/text readings round-trip exactly, explicit unit selection does not convert numbers, custom text/units/comparators work, suggestions rank abbreviations and avoid duplicate aliases, and SpO2 aliases share history while pulse/heart rate remain distinct.
+
+Two added browser scenarios verify preset selection and automatic field focus, keyboard navigation, Escape dismissing suggestions without closing the visit, custom numeric/qualitative measurements, exact stored values (`120/80 mmHg`, `100%`, `0/10`, etc.), and preservation of original readings while editing notes. The measurement dialog is checked at 390px for horizontal overflow. Screenshots of the desktop suggestions and mobile fields are saved under `.data/screenshots/` and were visually inspected. Existing upload, consent, transfer, source-view and patient-history scenarios also pass with the new forms.

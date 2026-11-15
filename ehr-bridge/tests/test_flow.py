@@ -38,10 +38,10 @@ def test_transfer_writes_real_destination_rows_in_destination_format(world):
     r=request(c);otp=code(c,r)
     assert c['other'].post('/api/hospital/requests/'+r['id']+'/transfer',json={'code':otp}).status_code==404
     response=c['a'].post('/api/hospital/requests/'+r['id']+'/transfer',json={'code':otp});assert response.status_code==200,response.text
-    assert response.json()['destination_format']=='epic' and response.json()['new_copies']==2
+    assert response.json()['destination_format']=='epic' and response.json()['new_copies']==r['version_count']
     with sqlite3.connect(db.directory/'memorial.sqlite3') as sql:
         rows=sql.execute('SELECT native_json,original_json,preserved_json FROM local_records WHERE imported=1').fetchall()
-        assert len(rows)==2
+        assert len(rows)==r['version_count']
         assert all('patientId' in json.loads(row[0]) and 'drugList' in json.loads(row[1]) for row in rows)
         assert json.loads(rows[0][2])['Blood group (fictional laboratory report)']=='A+'
     assert c['a'].get('/api/versions/'+outside).status_code==200
@@ -123,7 +123,7 @@ def test_code_attempts_expiration_and_denial(world):
 
 def test_transfer_snapshot_does_not_include_later_uploads(world):
     _,c=world;r=request(c);later=c['b'].post('/api/hospital/visits',json=upload_body()).json();otp=code(c,r)
-    result=c['a'].post('/api/hospital/requests/'+r['id']+'/transfer',json={'code':otp});assert result.status_code==200 and result.json()['approved_versions']==2
+    result=c['a'].post('/api/hospital/requests/'+r['id']+'/transfer',json={'code':otp});assert result.status_code==200 and result.json()['approved_versions']==r['version_count']
     assert c['a'].get('/api/versions/'+later['version_id']).status_code==404
 
 def test_failed_destination_write_rolls_back_code_and_central_transfer(world):

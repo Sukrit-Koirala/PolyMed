@@ -36,6 +36,8 @@ All seeded accounts use password **`Demo-access-2026!`**.
 | Second doctor | `jordan@bridge.demo` | Dr. Jordan Lee, Memorial Hospital; demonstrates doctor attribution |
 | Patient | `PT-DEMO-SARAH` | Sarah Mitchell; already enrolled |
 
+David (`PT-DEMO-0002`), Amara (`PT-DEMO-0003`), and Noah (`PT-DEMO-0004`) also have enrolled patient accounts with the same demo password. See [DEMO_DATA.md](DEMO_DATA.md) for all patient stories and their histories.
+
 Use a separate browser profile or an InPrivate window for the patient while a hospital is signed in. Ordinary tabs share a login cookie. For three simultaneous roles, use three browser profiles or sign out and switch accounts.
 
 ## Five-minute demonstration
@@ -59,6 +61,18 @@ Knowing someone's ID alone cannot claim their account. Only the registering hosp
 
 ## Patient summary and field versions
 
+### Entering measurements
+
+**Upload visit → Clinical entry → Measured observations** has **97 preset fields in 13 expandable categories**: vital signs, blood count, kidney/electrolytes, glucose/metabolism, liver/proteins, lipids, coagulation, inflammation, thyroid/nutrients, respiratory/blood gas, cardiac markers, urine/fluids, and body measurements/scores. Vital signs open first; other sections can be expanded as needed. Each field has a value and unit input, with optional context. Blood pressure has separate systolic and diastolic boxes.
+
+**Other / find a measurement** suggests matching preset names, abbreviations such as `SpO2`/`HbA1c`, and previously used custom field names from the hospital's authorized records as you type. Select a suggestion to open and focus its field. If no preset fits, choose **Use “[your name]” as a new measurement**, then enter its value and optional unit. Arrow keys and Enter select suggestions; Escape closes the suggestions before closing the visit dialog. Suggestions run locally, without sending entered names or patient records to an external search service.
+
+Leave unmeasured fields blank; no values are prefilled from previous visits. Filled values are saved as text with their units, so entering SpO2 `100` with unit `%` produces `100%` and avoids the old numeric-JSON validation error. Zero values are retained. Changing a unit does not convert the number. When editing a visit, original keys, units, context, and unfamiliar reading formats are retained unless edited; clear a field to omit it from the new version. Known aliases such as `SPO2` and `Oxygen saturation` share one history, while distinct tests remain separate.
+
+These presets are an entry aid, not an exhaustive terminology or a clinical interpretation engine. The advanced Native payload and FHIR R4 import tabs remain available. [HL7's vital-sign definitions](https://hl7.org/fhir/R4/observation-vitalsigns.html) and the [UCUM specification](https://ucum.org/ucum) describe the corresponding standards; choosing a form field does not assign a clinical code or establish FHIR conformance.
+
+### Reading values and history
+
 The patient dashboard displays a **Health summary** in plain language. Allergies, medications, measurements, visit details, additional clinical fields, and attachments each have **Show versions**. Lists expand/collapse using their dropdown; a medication's name, dose, unit, and frequency are shown as readable text. Nested additional information is labeled rather than displayed as JSON. The same summary is available when a hospital opens a patient profile.
 
 Each field's history combines every available hospital's stored snapshots and includes the complete field value, clinical date, doctor, hospital, and source version. Values are ordered by **clinical date**, then original source update time and version. A backdated report imported today does not replace a more recent clinical reading. The latest revision of a visit supplies that visit's current values; older revisions remain in the history. Observation labels differing only by case, camel case, or underscores are grouped; `BP` and `Blood pressure` share a history. No fuzzy clinical matching or unit conversion is performed.
@@ -69,7 +83,7 @@ The summary shows the latest **reported** value from current visit revisions, ra
 
 ## Populate and reset demo data
 
-The app seeds **2 hospitals, 3 doctors, 8 patients, 9 visits, and 10 versions** by default. Sarah has records in both hospitals and a two-version Valley visit. Other seeded patients are unclaimed so you can demonstrate activation by issuing their code from the registering hospital's dashboard. No medical image is fabricated by the seed; upload a fictional image/report for that part of the demo.
+The app seeds **2 hospitals, 3 doctors, 8 patients, 32 visits, 48 versions, and 16 PDF reports** by default. Every patient has detailed notes and records at both hospitals, with histories spanning 2025–2026. Four patient accounts are enrolled and four remain available for activation. One pending Memorial request for Sarah's Valley records is included; no transfer is pre-approved. The ankle imaging report is a fictional narrative rather than an actual X-ray image. See [DEMO_DATA.md](DEMO_DATA.md).
 
 Add more patients without replacing existing demo work:
 
@@ -77,7 +91,7 @@ Add more patients without replacing existing demo work:
 .\ehr-bridge\scripts\seed.ps1 -Patients 24
 ```
 
-Seed is idempotent: repeated runs do not duplicate patients/visits or overwrite changes. `-Patients` sets the seeded population target, between 2 and 500; it does not remove extra patients.
+Seed is idempotent: repeated runs do not duplicate patients/visits or overwrite changes. `-Patients` sets the seeded population target, between 2 and 500; it does not remove extra patients. Existing starter charts are preserved; use reset to replace them with the detailed dataset.
 
 To restore a clean demonstration, stop this app with Ctrl+C, then:
 

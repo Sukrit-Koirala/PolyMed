@@ -46,7 +46,7 @@ def file_payload(value):
     name=''.join(ch for ch in name if ch.isprintable() and ch not in ('"',';'))[:160] or 'attachment'
     return {'id':uid('file-'),'name':name,'mime':mime,'content':content,'sha256':hashlib.sha256(content).hexdigest(),'size':len(content)}
 
-def append_visit(c,actor,patient_id,native,new_files=None,visit_id=None,expected=None,retain=None,fhir_patient_confirmed=False):
+def append_visit(c,actor,patient_id,native,new_files=None,visit_id=None,expected=None,retain=None,fhir_patient_confirmed=False,recorded_at=None):
     hospital=actor['hospital_id'];patient=c.execute('SELECT * FROM patients WHERE id=?',(patient_id,)).fetchone()
     if not patient:raise HTTPException(404,'Patient not found')
     if native.get('resourceType'):
@@ -84,7 +84,8 @@ def append_visit(c,actor,patient_id,native,new_files=None,visit_id=None,expected
         c.execute('INSERT INTO destination.local_files VALUES(?,?,?,?,?,?)',(f['id'],patient_id,f['name'],f['mime'],f['sha256'],f['content']))
         files.append({k:v for k,v in f.items() if k!='content'})
     if len(files)>10:raise HTTPException(422,'A visit version supports up to ten attachments')
-    version_id=uid('ver-');updated=now()
+    # Historical timestamps are supplied only by the trusted seed builder, never the API.
+    version_id=uid('ver-');updated=recorded_at or now()
     diff=changes(json.loads(previous['canonical_json']) if previous else {},canonical)
     diff+=changes({'attachments':[f['id'] for f in json.loads(previous['files_json'])] if previous else []},{'attachments':[f['id'] for f in files]})
     c.execute('INSERT INTO versions VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',(version_id,visit_id,version,patient_id,hospital,actor['id'],actor['name'],updated,dump(native),dump(canonical),dump(diff),dump(files)))
