@@ -28,7 +28,7 @@ if (-not (Test-Path -LiteralPath $nextPath)) { throw 'Frontend dependencies are 
 foreach ($port in @(8000, 3000)) {
     $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $port)
     try { $listener.Start() }
-    catch { throw "Port $port is already in use. Stop the existing EHR Bridge server in its terminal, then run this launcher again." }
+    catch { throw "Port $port is already in use. Stop the existing ClinicalSync server in its terminal, then run this launcher again." }
     finally { $listener.Stop() }
 }
 
@@ -42,7 +42,7 @@ $apiLog = Join-Path $logDirectory 'backend.log'
 $apiErrorLog = Join-Path $logDirectory 'backend-error.log'
 $apiProcess = Start-Process -FilePath $pythonPath -ArgumentList '-u','-m','uvicorn','backend.app.main:app','--host','127.0.0.1','--port','8000' -WorkingDirectory $repoPath -WindowStyle Hidden -RedirectStandardOutput $apiLog -RedirectStandardError $apiErrorLog -PassThru
 try {
-    Write-Host 'Waiting for the EHR Bridge API on port 8000...'
+    Write-Host 'Waiting for the ClinicalSync API on port 8000...'
     $deadline = [DateTime]::UtcNow.AddSeconds(30)
     $apiReady = $false
     while ([DateTime]::UtcNow -lt $deadline) {
@@ -59,7 +59,7 @@ try {
         Start-Sleep -Milliseconds 200
     }
     if (-not $apiReady) { throw "Backend did not become ready within 30 seconds. See $apiErrorLog" }
-    Write-Host 'EHR Bridge: http://127.0.0.1:3000 | API docs: http://127.0.0.1:8000/docs'
+    Write-Host 'ClinicalSync: http://127.0.0.1:3000 | API docs: http://127.0.0.1:8000/docs'
     Write-Host "Backend logs: $apiLog and $apiErrorLog"
     Write-Host 'Keep this terminal open. Press Ctrl+C to stop both servers.'
     Push-Location frontend

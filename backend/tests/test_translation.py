@@ -25,7 +25,7 @@ def test_bidirectional_roundtrip_preserves_meaning(origin, destination, kind, de
 def test_unknown_frequency_and_nested_fields_preserved(hospital):
     source = source_payload(hospital, 'r', 'p', 'medication', 'Synthetic medicine', 'DEMO', dose=10, unit='mg', frequency='UNRECOGNIZED-QX')
     source['customClinicalContext'] = {'important': 'Preserve this clinical source evidence'}
-    if 'medication' in source:
+    if hospital == 'northstar':
         source['medication']['specialInstruction'] = 'Synthetic unknown instruction'
     else:
         source['entry']['details']['specialInstruction'] = 'Synthetic unknown instruction'

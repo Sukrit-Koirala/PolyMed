@@ -1,7 +1,5 @@
 # Documentation providers
 
-The SOAP draft/approval and raw-transcript expiry sections below describe the preserved **legacy ClinicalSync notes workflow**. EHR Bridge reuses its authorized audio transcription adapter, but its consultation intake, extractive demo suggestions, and saved encounter/voice history are separate. Bridge sample text is explicitly fictional, local extraction is not presented as AI, and saved Bridge transcripts are retained in encounter/voice snapshots rather than covered by legacy draft expiry. See [BRIDGE_ARCHITECTURE.md](BRIDGE_ARCHITECTURE.md).
-
 The documentation workflow separates audio capture, transcription, draft organization, clinician editing, explicit approval, and clinical publication. None of the provider interfaces can approve or save a clinical record. Only the authenticated note-approval endpoint creates the originating hospital’s document and outbox event.
 
 ## Default development mode

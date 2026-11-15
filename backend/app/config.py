@@ -24,12 +24,10 @@ class Settings:
     transcript_retention_days: int = field(default_factory=lambda: int(os.getenv('TRANSCRIPT_RETENTION_DAYS', '7')))
     audio_max_bytes: int = field(default_factory=lambda: int(os.getenv('AUDIO_MAX_BYTES', '15728640')))
     extra_hospitals: dict = field(default_factory=lambda: json.loads(os.getenv('HOSPITAL_CONFIG_JSON', '{}')), repr=False)
-    bridge_enabled: bool = field(default_factory=lambda: os.getenv('BRIDGE_ENABLED', 'true').lower() == 'true')
-    bridge_password: str = field(default_factory=lambda: os.getenv('EHR_BRIDGE_DEMO_PASSWORD', 'EHRBridge-demo-2026!'), repr=False)
 
     def __post_init__(self):
         for hospital_id, definition in self.extra_hospitals.items():
-            if hospital_id in ('northstar', 'riverside', 'memorial', 'valley') or not re.fullmatch(r'[a-z][a-z0-9-]{1,19}', hospital_id):
+            if hospital_id in ('northstar', 'riverside') or not re.fullmatch(r'[a-z][a-z0-9-]{1,19}', hospital_id):
                 raise ValueError('Additional hospital identifiers must be unique lowercase slugs')
             if definition.get('adapter') not in ('epic-mock', 'oracle-mock') or not definition.get('name') or not definition.get('database_url'):
                 raise ValueError('Additional hospitals require name, adapter, and database_url')
@@ -48,11 +46,4 @@ class Settings:
 
     @property
     def hospital_urls(self):
-        bridge = {}
-        if self.bridge_enabled:
-            from sqlalchemy.engine import make_url
-            base = make_url(self.shared_url)
-            for hospital in ('memorial', 'valley'):
-                database = str(Path(base.database).with_name('ehrbridge_' + hospital + '.db')) if base.drivername.startswith('sqlite') else 'ehrbridge_' + hospital
-                bridge[hospital] = os.getenv(hospital.upper() + '_DATABASE_URL') or base.set(database=database).render_as_string(hide_password=False)
-        return {'northstar': self.hospital_a_url, 'riverside': self.hospital_b_url, **bridge, **{hospital_id: definition['database_url'] for hospital_id, definition in self.extra_hospitals.items()}}
+        return {'northstar': self.hospital_a_url, 'riverside': self.hospital_b_url, **{hospital_id: definition['database_url'] for hospital_id, definition in self.extra_hospitals.items()}}

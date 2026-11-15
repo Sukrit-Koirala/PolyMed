@@ -28,10 +28,6 @@ def main():
     try:
         if args.action == 'seed':
             print('Synthetic fixtures seeded' if seed(db) else 'Synthetic fixtures already present')
-            if settings.bridge_enabled:
-                from .bridge_seed import seed_bridge
-                seed_bridge(db)
-                print('EHR Bridge fictional story ready')
         else:
             for hospital in db.local_factories:
                 print(SynchronizationService(db).run(hospital))

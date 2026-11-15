@@ -8,7 +8,7 @@ export class ApiError extends Error {
 }
 
 export async function api<T = any>(path: string, options: RequestInit = {}): Promise<T> {
-  const unavailable = 'The EHR Bridge backend is unavailable. Check that the API is running on port 8000, then try again.';
+  const unavailable = 'The ClinicalSync backend is unavailable. Check that the API is running on port 8000, then try again.';
   let response: Response;
   try {
     response = await fetch(`/api${path}`, {

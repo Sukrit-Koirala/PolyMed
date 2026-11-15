@@ -5,11 +5,6 @@ from backend.app.config import Settings
 from backend.app.main import create_app
 
 
-@pytest.fixture(autouse=True)
-def isolate_bridge_configuration(monkeypatch):
-    monkeypatch.setenv('BRIDGE_ENABLED', 'false')
-
-
 @pytest.fixture
 def app(tmp_path):
     settings = Settings(shared_url=f'sqlite:///{tmp_path / "clinicalsync_shared.db"}', hospital_a_url=f'sqlite:///{tmp_path / "clinicalsync_northstar.db"}', hospital_b_url=f'sqlite:///{tmp_path / "clinicalsync_riverside.db"}')

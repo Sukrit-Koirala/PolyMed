@@ -21,11 +21,6 @@ class Databases:
         self.settings = settings
         from .adapters import ADAPTERS, EpicMockAdapter, OracleMockAdapter
         adapter_types = {'epic-mock': EpicMockAdapter, 'oracle-mock': OracleMockAdapter}
-        if settings.bridge_enabled:
-            for hospital_id, kind in [('memorial', EpicMockAdapter), ('valley', OracleMockAdapter)]:
-                adapter = kind()
-                adapter.hospital_id = hospital_id
-                ADAPTERS[hospital_id] = adapter
         for hospital_id, definition in settings.extra_hospitals.items():
             adapter = adapter_types[definition['adapter']]()
             adapter.hospital_id = hospital_id

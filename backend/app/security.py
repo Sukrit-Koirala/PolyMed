@@ -67,12 +67,6 @@ def current_user(request: Request):
         if membership_count > 1 and request.method not in ('GET', 'HEAD', 'OPTIONS') and not expected_workspace and not request.url.path.startswith('/api/auth/'):
             raise HTTPException(409, 'An explicit workspace context is required for this multi-hospital account')
         request.state.csrf = session.csrf
-        # Bridge accounts use the consent-aware APIs. Legacy routes cannot bypass grants.
-        if hospital in ('memorial', 'valley', 'patient-portal'):
-            path = request.url.path
-            capture = path.startswith('/api/local/patients/') and path.endswith(('/transcriptions', '/recording-events')) and membership.role == 'clinician'
-            if not (path.startswith(('/api/bridge/', '/api/auth/')) or path == '/api/notes/config' or capture):
-                raise HTTPException(403, 'Use the EHR Bridge scoped workflow; legacy clinical routes are unavailable to this account')
         return WorkspaceUser(user.id, user.email, user.name, hospital, membership.role)
 
 
@@ -97,11 +91,7 @@ def require_local(s, user, patient_id):
 
 
 def authorized_patient_ids(s, user):
-    query = select(LinkMember.patient_id).join(CareRelationship, (CareRelationship.hospital_id == LinkMember.hospital_id) & (CareRelationship.local_patient_id == LinkMember.local_patient_id)).where(LinkMember.hospital_id == user.hospital_id, LinkMember.status == 'CONFIRMED')
-    if user.hospital_id not in ('memorial', 'valley', 'patient-portal'):
-        from .bridge_models import BridgePatient
-        query = query.where(LinkMember.patient_id.not_in(select(BridgePatient.id)))
-    return list(s.scalars(query).unique())
+    return list(s.scalars(select(LinkMember.patient_id).join(CareRelationship, (CareRelationship.hospital_id == LinkMember.hospital_id) & (CareRelationship.local_patient_id == LinkMember.local_patient_id)).where(LinkMember.hospital_id == user.hospital_id, LinkMember.status == 'CONFIRMED')).unique())
 
 
 def require_shared(s, user, patient_id):

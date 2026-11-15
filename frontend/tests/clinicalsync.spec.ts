@@ -10,7 +10,7 @@ test.beforeAll(async ({ request }) => {
 });
 
 async function login(page: Page, account = 'network') {
-  await page.goto('/legacy');
+  await page.goto('/');
   await page.getByLabel('Demo account', { exact: true }).selectOption(`${account}@clinicalsync.demo`);
   await page.getByLabel('Password', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();

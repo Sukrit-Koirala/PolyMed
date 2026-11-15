@@ -38,9 +38,6 @@ def create_app(settings=None, initialize=True):
             db.create_schema()
             if settings.demo_mode:
                 seed(db)
-                if settings.bridge_enabled:
-                    from .bridge_seed import seed_bridge
-                    seed_bridge(db)
         from .retention import purge_expired_transcripts
         from starlette.concurrency import run_in_threadpool
         if initialize:
@@ -490,8 +487,6 @@ def create_app(settings=None, initialize=True):
     def reset(body: ResetInput, response: Response, user=Depends(current_user)):
         demo_only()
         require_admin(user)
-        if settings.bridge_enabled:
-            raise HTTPException(403, 'Legacy reset is disabled while EHR Bridge stores are configured')
         if settings.extra_hospitals:
             raise HTTPException(403, 'Demo reset cannot run when additional hospital stores are configured')
         urls = [(settings.shared_url, 'clinicalsync_shared'), (settings.hospital_a_url, 'clinicalsync_northstar'), (settings.hospital_b_url, 'clinicalsync_riverside')]
@@ -529,9 +524,6 @@ def create_app(settings=None, initialize=True):
 
     from .workspace import build_workspace_router
     app.include_router(build_workspace_router(db, settings))
-    if settings.bridge_enabled:
-        from .bridge_routes import build_bridge_router
-        app.include_router(build_bridge_router(db, settings))
     return app
 
 

@@ -358,6 +358,3 @@ def immutable(mapper, connection, target):
 for cls in (LocalVersion, ResourceVersion, ClinicalEvent, Provenance, AuditEvent, ReviewDecision, LocalTimelineEvent, ConflictReviewDecision):
     event.listen(cls, 'before_update', immutable)
     event.listen(cls, 'before_delete', immutable)
-
-# Register additive Bridge tables with the same shared metadata.
-from . import bridge_models as _bridge_models

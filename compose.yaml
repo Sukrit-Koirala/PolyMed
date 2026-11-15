@@ -6,9 +6,12 @@ services:
       POSTGRES_DB: clinicalsync_shared
       POSTGRES_USER: clinicalsync
       POSTGRES_PASSWORD: ${SHARED_DB_PASSWORD:-synthetic-shared-local-only}
-    volumes: [shared-data:/var/lib/postgresql/data]
+    volumes:
+    - shared-data:/var/lib/postgresql/data
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U clinicalsync -d clinicalsync_shared"]
+      test:
+      - CMD-SHELL
+      - pg_isready -U clinicalsync -d clinicalsync_shared
       interval: 3s
       timeout: 3s
       retries: 20
@@ -18,9 +21,12 @@ services:
       POSTGRES_DB: clinicalsync_northstar
       POSTGRES_USER: northstar
       POSTGRES_PASSWORD: ${NORTHSTAR_DB_PASSWORD:-synthetic-northstar-local-only}
-    volumes: [northstar-data:/var/lib/postgresql/data]
+    volumes:
+    - northstar-data:/var/lib/postgresql/data
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U northstar -d clinicalsync_northstar"]
+      test:
+      - CMD-SHELL
+      - pg_isready -U northstar -d clinicalsync_northstar
       interval: 3s
       timeout: 3s
       retries: 20
@@ -30,9 +36,12 @@ services:
       POSTGRES_DB: clinicalsync_riverside
       POSTGRES_USER: riverside
       POSTGRES_PASSWORD: ${RIVERSIDE_DB_PASSWORD:-synthetic-riverside-local-only}
-    volumes: [riverside-data:/var/lib/postgresql/data]
+    volumes:
+    - riverside-data:/var/lib/postgresql/data
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U riverside -d clinicalsync_riverside"]
+      test:
+      - CMD-SHELL
+      - pg_isready -U riverside -d clinicalsync_riverside
       interval: 3s
       timeout: 3s
       retries: 20
@@ -44,10 +53,6 @@ services:
       SHARED_DATABASE_URL: postgresql+psycopg://clinicalsync:${SHARED_DB_PASSWORD:-synthetic-shared-local-only}@shared-db:5432/clinicalsync_shared
       HOSPITAL_A_DATABASE_URL: postgresql+psycopg://northstar:${NORTHSTAR_DB_PASSWORD:-synthetic-northstar-local-only}@northstar-db:5432/clinicalsync_northstar
       HOSPITAL_B_DATABASE_URL: postgresql+psycopg://riverside:${RIVERSIDE_DB_PASSWORD:-synthetic-riverside-local-only}@riverside-db:5432/clinicalsync_riverside
-      MEMORIAL_DATABASE_URL: postgresql+psycopg://memorial:${MEMORIAL_DB_PASSWORD:-synthetic-memorial-local-only}@memorial-db:5432/ehrbridge_memorial
-      VALLEY_DATABASE_URL: postgresql+psycopg://valley:${VALLEY_DB_PASSWORD:-synthetic-valley-local-only}@valley-db:5432/ehrbridge_valley
-      BRIDGE_ENABLED: "true"
-      EHR_BRIDGE_DEMO_PASSWORD: ${EHR_BRIDGE_DEMO_PASSWORD:-EHRBridge-demo-2026!}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-ClinicalSync-demo-2026!}
       DEMO_MODE: ${DEMO_MODE:-true}
       SECURE_COOKIE: ${SECURE_COOKIE:-false}
@@ -61,15 +66,21 @@ services:
       NOTE_MODEL: ${NOTE_MODEL:-gpt-4.1-mini}
       TRANSCRIPT_RETENTION_DAYS: ${TRANSCRIPT_RETENTION_DAYS:-7}
       AUDIO_MAX_BYTES: ${AUDIO_MAX_BYTES:-15728640}
-    ports: [127.0.0.1:8000:8000]
+    ports:
+    - 127.0.0.1:8000:8000
     depends_on:
-      shared-db: {condition: service_healthy}
-      northstar-db: {condition: service_healthy}
-      riverside-db: {condition: service_healthy}
-      memorial-db: {condition: service_healthy}
-      valley-db: {condition: service_healthy}
+      shared-db:
+        condition: service_healthy
+      northstar-db:
+        condition: service_healthy
+      riverside-db:
+        condition: service_healthy
     healthcheck:
-      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')
       interval: 5s
       timeout: 3s
       retries: 20
@@ -77,36 +88,12 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    ports: [127.0.0.1:3000:3000]
+    ports:
+    - 127.0.0.1:3000:3000
     depends_on:
-      backend: {condition: service_healthy}
-  memorial-db:
-    image: postgres:17-alpine
-    environment:
-      POSTGRES_DB: ehrbridge_memorial
-      POSTGRES_USER: memorial
-      POSTGRES_PASSWORD: ${MEMORIAL_DB_PASSWORD:-synthetic-memorial-local-only}
-    volumes: [memorial-data:/var/lib/postgresql/data]
-    healthcheck:
-      test: [CMD-SHELL, "pg_isready -U memorial -d ehrbridge_memorial"]
-      interval: 3s
-      timeout: 3s
-      retries: 20
-  valley-db:
-    image: postgres:17-alpine
-    environment:
-      POSTGRES_DB: ehrbridge_valley
-      POSTGRES_USER: valley
-      POSTGRES_PASSWORD: ${VALLEY_DB_PASSWORD:-synthetic-valley-local-only}
-    volumes: [valley-data:/var/lib/postgresql/data]
-    healthcheck:
-      test: [CMD-SHELL, "pg_isready -U valley -d ehrbridge_valley"]
-      interval: 3s
-      timeout: 3s
-      retries: 20
+      backend:
+        condition: service_healthy
 volumes:
-  shared-data:
-  northstar-data:
-  riverside-data:
-  memorial-data:
-  valley-data:
+  shared-data: null
+  northstar-data: null
+  riverside-data: null

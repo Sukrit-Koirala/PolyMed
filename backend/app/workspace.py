@@ -264,8 +264,7 @@ def build_workspace_router(db, settings):
         require_admin(user)
         with db.shared() as s:
             audit(s, user, 'SEARCH_IDENTITY_LINK_TARGETS', 'identity-metadata')
-            from .bridge_models import BridgePatient
-            return [row(p) | {'members': [row(m) | {'hospital_name': s.get(Hospital, m.hospital_id).name} for m in s.scalars(select(LinkMember).where(LinkMember.patient_id == p.id, LinkMember.status == 'CONFIRMED'))]} for p in s.scalars(select(PatientLink).where(PatientLink.id.not_in(select(BridgePatient.id))).order_by(PatientLink.name)) if q.casefold() in (p.name + ' ' + p.id).casefold()][:20]
+            return [row(p) | {'members': [row(m) | {'hospital_name': s.get(Hospital, m.hospital_id).name} for m in s.scalars(select(LinkMember).where(LinkMember.patient_id == p.id, LinkMember.status == 'CONFIRMED'))]} for p in s.scalars(select(PatientLink).order_by(PatientLink.name)) if q.casefold() in (p.name + ' ' + p.id).casefold()][:20]
 
     @router.post('/identity/link-requests', status_code=201, tags=['Identity'])
     def request_identity_link(body: IdentityLinkRequest, user=Depends(current_user)):
@@ -273,9 +272,6 @@ def build_workspace_router(db, settings):
         with db.shared() as s:
             member = s.scalar(select(LinkMember).where(LinkMember.hospital_id == body.hospital_id, LinkMember.local_patient_id == body.local_patient_id))
             target = s.get(PatientLink, body.target_patient_id)
-            from .bridge_models import BridgePatient
-            if body.hospital_id in ('memorial', 'valley') or s.get(BridgePatient, body.target_patient_id):
-                raise HTTPException(403, 'Bridge identities cannot be reassigned through legacy identity tools')
             if not member or not target:
                 raise HTTPException(404, 'Source or target identity not found')
             if member.patient_id == target.id:

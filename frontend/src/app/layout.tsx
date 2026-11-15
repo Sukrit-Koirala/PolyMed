@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'EHR Bridge · Your EHR, made usable',
-  description: 'A fictional EHR assistive workspace with patient-controlled access, clinical intake, and preserved source history.'
+  title: 'ClinicalSync · Connected clinical context',
+  description: 'A synthetic demonstration of shared, source-attributed clinical information and hospital-specific review.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
