@@ -1,0 +1,59 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 2082 >>
+stream
+0.07 0.35 0.37 rg 0 734 612 58 re f
+1 1 1 rg BT /F2 18 Tf 40 762 Td (Valley Medical - Demo) Tj ET
+1 1 1 rg BT /F1 9 Tf 40 744 Td (FICTIONAL DEMO REPORT - NOT FOR CLINICAL USE) Tj ET
+0.12 0.18 0.23 rg BT /F2 16 Tf 40 708 Td (Radiology report) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 684 Td (Patient: Sarah Mitchell) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 330 684 Td (Patient ID: PT-DEMO-SARAH) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 667 Td (Date of birth: 1980-06-12) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 330 667 Td (Visit date: 2026-11-10) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 650 Td (Report ID: DEMO-VAL-RAD-003) Tj ET
+0.80 0.85 0.87 RG 40 637 m 572 637 l S
+0.12 0.18 0.23 rg BT /F2 10 Tf 40 614 Td (NARRATIVE) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 595 Td (FICTIONAL DEMONSTRATION REPORT. This is an invented radiology narrative, not an) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 580 Td (interpretation of an actual image. Synthetic findings: cardiac silhouette is not enlarged;) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 565 Td (no focal air-space opacity, pleural effusion, or pneumothorax is described. Synthetic) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 550 Td (impression: no acute cardiopulmonary abnormality described. No imaging study was acquired or) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 535 Td (reviewed. Not for diagnosis or clinical decisions.) Tj ET
+0.12 0.18 0.23 rg BT /F2 10 Tf 40 503 Td (ADDITIONAL INFORMATION) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 484 Td (Study: Chest radiograph, two views - fictional study) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 464 Td (Comparison: None supplied) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 444 Td (Image available: False) Tj ET
+0.12 0.18 0.23 rg BT /F1 10 Tf 40 424 Td (Allergy reconciliation: Not performed; an empty list is not confirmation of no allergies.) Tj ET
+0.12 0.18 0.23 rg BT /F1 9 Tf 40 57 Td (Generated demonstration data. No real patient, specimen, or image was evaluated.) Tj ET
+0.12 0.18 0.23 rg BT /F1 9 Tf 40 42 Td (Doctor and upload timestamp are assigned by the app when this report is uploaded.) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000000354 00000 n 
+0000000456 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2590
+%%EOF

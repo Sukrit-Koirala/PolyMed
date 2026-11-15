@@ -1,0 +1,25 @@
+{
+  "personId": "PT-DEMO-SARAH",
+  "encounter": {
+    "date": "2026-11-04",
+    "reason": "Fictional complete blood count report",
+    "note": "FICTIONAL DEMONSTRATION REPORT. A synthetic blood specimen was recorded for a complete blood count. All values in this report are invented to demonstrate structured laboratory data transfer. No real specimen was collected, no laboratory analysis was performed, and no treatment recommendation is provided. Not for clinical decisions."
+  },
+  "drugList": [],
+  "allergyList": [],
+  "measurements": {
+    "Hemoglobin": "13.1 g/dL",
+    "White blood cell count": "6.8 x 10^9/L",
+    "Platelet count": "245 x 10^9/L",
+    "Hematocrit": "39.2%",
+    "Mean corpuscular volume": "88 fL"
+  },
+  "extraClinicalData": {
+    "report_id": "DEMO-VAL-LAB-002",
+    "report_type": "Laboratory report",
+    "specimen": "Synthetic whole blood sample - no physical specimen",
+    "blood_group": "A+ (fictional)",
+    "data_classification": "Fictional demonstration data",
+    "allergy_reconciliation": "Not performed; an empty list is not confirmation of no allergies."
+  }
+}

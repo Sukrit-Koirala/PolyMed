@@ -1,0 +1,20 @@
+{
+  "personId": "PT-DEMO-SARAH",
+  "encounter": {
+    "date": "2026-11-10",
+    "reason": "Fictional chest X-ray report",
+    "note": "FICTIONAL DEMONSTRATION REPORT. This is an invented radiology narrative, not an interpretation of an actual image. Synthetic findings: cardiac silhouette is not enlarged; no focal air-space opacity, pleural effusion, or pneumothorax is described. Synthetic impression: no acute cardiopulmonary abnormality described. No imaging study was acquired or reviewed. Not for diagnosis or clinical decisions."
+  },
+  "drugList": [],
+  "allergyList": [],
+  "measurements": {},
+  "extraClinicalData": {
+    "report_id": "DEMO-VAL-RAD-003",
+    "report_type": "Radiology report",
+    "study": "Chest radiograph, two views - fictional study",
+    "comparison": "None supplied",
+    "image_available": false,
+    "data_classification": "Fictional demonstration data",
+    "allergy_reconciliation": "Not performed; an empty list is not confirmation of no allergies."
+  }
+}

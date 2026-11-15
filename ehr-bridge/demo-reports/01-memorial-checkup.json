@@ -1,0 +1,21 @@
+{
+  "patientId": "PT-DEMO-SARAH",
+  "visitDate": "2026-11-02",
+  "chiefComplaint": "Fictional routine outpatient checkup",
+  "clinicalNotes": "FICTIONAL DEMONSTRATION REPORT. Sarah Mitchell attended a routine outpatient visit. The synthetic examination records an alert patient with no acute distress, clear breath sounds, and a regular heart rhythm. No new treatment or medication changes are documented in this sample. This report is generated test data and must not be used for clinical decisions.",
+  "medications": [],
+  "allergies": ["Penicillin - rash (fictional history)"],
+  "observations": {
+    "Blood pressure": "122/78 mmHg",
+    "Heart rate": "74 beats/min",
+    "Respiratory rate": "16 breaths/min",
+    "Temperature": "36.7 C",
+    "Oxygen saturation": "98% on room air"
+  },
+  "additionalInformation": {
+    "report_id": "DEMO-MEM-001",
+    "report_type": "Outpatient visit summary",
+    "data_classification": "Fictional demonstration data",
+    "medication_reconciliation": "Not performed in this synthetic report; an empty list is not confirmation of no medications."
+  }
+}

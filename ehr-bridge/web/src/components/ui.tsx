@@ -1,0 +1,22 @@
+'use client';
+import * as Dialog from '@radix-ui/react-dialog';
+import {Loader2,X,ShieldCheck} from 'lucide-react';
+import type {ButtonHTMLAttributes,ReactNode} from 'react';
+export function Button({children,tone='primary',busy=false,...props}:ButtonHTMLAttributes<HTMLButtonElement>&{tone?:string;busy?:boolean}){return <button type="button" {...props} className={`button ${tone} ${props.className||''}`} disabled={props.disabled||busy}>{busy&&<Loader2 size={15} className="spin"/>}{children}</button>}
+export function Modal({title,description,children,onClose,wide=false}:{title:string;description?:string;children:ReactNode;onClose:()=>void;wide?:boolean}){return <Dialog.Root open onOpenChange={v=>!v&&onClose()}><Dialog.Portal><Dialog.Overlay className="overlay"/><Dialog.Content className={`modal ${wide?'wide':''}`}><header><div><Dialog.Title>{title}</Dialog.Title><Dialog.Description>{description||'Fictional demonstration. Check the patient and source before proceeding.'}</Dialog.Description></div><Dialog.Close asChild><button className="icon" aria-label="Close dialog"><X size={19}/></button></Dialog.Close></header>{children}</Dialog.Content></Dialog.Portal></Dialog.Root>}
+export function Badge({children,tone='blue'}:{children:ReactNode;tone?:string}){return <span className={'badge '+tone}>{children}</span>}
+export function Status({value}:{value:string}){const label:Record<string,string>={PENDING:'Awaiting patient',CODE_READY:'Code generated',CODE_EXPIRED:'Code expired',EXPIRED:'Request expired',COMPLETED:'Transferred',DENIED:'Denied'};return <Badge tone={value==='COMPLETED'?'green':value==='DENIED'?'red':'amber'}>{label[value]||value}</Badge>}
+export function Empty({title,children}:{title:string;children?:ReactNode}){return <div className="empty"><ShieldCheck size={28}/><h3>{title}</h3><p>{children}</p></div>}
+export function Alert({text}:{text:string}){return text?<div className="alert error" role="alert">{text}</div>:null}
+export function Avatar({name}:{name:string}){return <span className="avatar">{name.replace('Dr. ','').split(' ').map(s=>s[0]).slice(0,2).join('')}</span>}
+export const hospitals:Record<string,string>={memorial:'Memorial Hospital',valley:'Valley Medical'};
+export const date=(value:string,time=false)=>value?new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',...(time?{hour:'numeric',minute:'2-digit'} as const:{}),timeZone:'America/Chicago'}).format(new Date(value.length===10?value+'T12:00:00Z':value)):'Not recorded';
+export const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+let csrf='';export const setCsrf=(value:string)=>csrf=value;
+export class ApiError extends Error{constructor(public status:number,message:string,public detail?:any){super(message)}}
+export async function api(path:string,body?:any,method=body===undefined?'GET':'POST'){
+ let response:Response;try{response=await fetch('/api'+path,{method,credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf},...(body!==undefined?{body:JSON.stringify(body)}:{})})}catch{throw new ApiError(503,'The API is unavailable. Start ehr-bridge/run.ps1 and try again.')}
+ let data:any;try{data=await response.json()}catch{throw new ApiError(response.status,'The API is unavailable or returned an invalid response. Check port 8200.')}
+ if(!response.ok){const detail=Array.isArray(data.detail)?data.detail.map((d:any)=>d.msg).join('; '):data.detail;throw new ApiError(response.status,typeof detail==='object'?detail.message:detail||'Request failed',data.detail)}return data;
+}
+export function nativePayload(format:string,canonical:any,patientId:string){if(format==='epic')return {patientId,visitDate:canonical.visit_date,chiefComplaint:canonical.reason,clinicalNotes:canonical.notes,medications:canonical.medications,allergies:canonical.allergies,observations:canonical.observations,additionalInformation:canonical.additional};return {personId:patientId,encounter:{date:canonical.visit_date,reason:canonical.reason,note:canonical.notes},drugList:canonical.medications.map((m:any)=>({drug:m.name,strength:m.dose,unit:m.unit,schedule:m.frequency})),allergyList:canonical.allergies,measurements:canonical.observations,extraClinicalData:canonical.additional};}
