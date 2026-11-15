@@ -1,0 +1,1542 @@
+{
+  "shared": {
+    "hospitals": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "ehr",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [],
+      "unique": [],
+      "indexes": []
+    },
+    "users": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "password_hash",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "role",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "email"
+        ]
+      ],
+      "indexes": []
+    },
+    "sessions": {
+      "columns": [
+        {
+          "name": "token_hash",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "user_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "csrf",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "expires_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "references": [
+            "users.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": []
+    },
+    "patient_links": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "birth_date",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "synthetic",
+          "type": "Boolean",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [],
+      "unique": [],
+      "indexes": []
+    },
+    "patient_link_members": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "local_patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "evidence",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "reviewed_by",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "reviewed_by"
+          ],
+          "references": [
+            "users.id"
+          ]
+        },
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        },
+        {
+          "columns": [
+            "patient_id"
+          ],
+          "references": [
+            "patient_links.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "hospital_id",
+          "local_patient_id"
+        ]
+      ],
+      "indexes": [
+        {
+          "name": "ix_patient_link_members_patient_id",
+          "columns": [
+            "patient_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "patient_care_relationships": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "local_patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "reason",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "hospital_id",
+          "local_patient_id"
+        ]
+      ],
+      "indexes": []
+    },
+    "identity_review_candidates": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "member_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "evidence",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "reviewed_by",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "reviewed_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "note",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "reviewed_by"
+          ],
+          "references": [
+            "users.id"
+          ]
+        },
+        {
+          "columns": [
+            "member_id"
+          ],
+          "references": [
+            "patient_link_members.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": []
+    },
+    "source_records": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "source_record_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "local_patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "latest_version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "last_observed_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "hospital_id",
+          "source_record_id"
+        ]
+      ],
+      "indexes": []
+    },
+    "canonical_resources": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "source_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "local_patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "resource_type",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "source_version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "effective_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "original_payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "warnings",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "source_id"
+          ],
+          "references": [
+            "source_records.id"
+          ]
+        },
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        },
+        {
+          "columns": [
+            "patient_id"
+          ],
+          "references": [
+            "patient_links.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "source_id"
+        ]
+      ],
+      "indexes": [
+        {
+          "name": "ix_canonical_resources_effective_at",
+          "columns": [
+            "effective_at"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_canonical_resources_patient_id",
+          "columns": [
+            "patient_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_canonical_resources_hospital_id",
+          "columns": [
+            "hospital_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_canonical_resources_resource_type",
+          "columns": [
+            "resource_type"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "canonical_resource_versions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "resource_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "original_payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "warnings",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "resource_id"
+          ],
+          "references": [
+            "canonical_resources.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "resource_id",
+          "version"
+        ]
+      ],
+      "indexes": [
+        {
+          "name": "ix_canonical_resource_versions_resource_id",
+          "columns": [
+            "resource_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "clinical_events": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "source_record_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "resource_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "resource_type",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "source_version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "event_type",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "before",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "after",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "diff",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "parent_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "author",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "occurred_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "ingested_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "transformation_version",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "correlation_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "lineage",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "fingerprint",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "parent_id"
+          ],
+          "references": [
+            "clinical_events.id"
+          ]
+        },
+        {
+          "columns": [
+            "resource_id"
+          ],
+          "references": [
+            "canonical_resources.id"
+          ]
+        },
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        },
+        {
+          "columns": [
+            "patient_id"
+          ],
+          "references": [
+            "patient_links.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "hospital_id",
+          "source_record_id",
+          "source_version"
+        ]
+      ],
+      "indexes": [
+        {
+          "name": "ix_clinical_events_patient_id",
+          "columns": [
+            "patient_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "provenance_records": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "event_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "event_id"
+          ],
+          "references": [
+            "clinical_events.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "event_id"
+        ]
+      ],
+      "indexes": []
+    },
+    "synchronization_jobs": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "started_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "completed_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "published",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "suppressed",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "failed",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "waiting",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": [
+        {
+          "name": "ix_synchronization_jobs_hospital_id",
+          "columns": [
+            "hospital_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "delivery_events": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "event_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "state",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "delivered_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        },
+        {
+          "columns": [
+            "event_id"
+          ],
+          "references": [
+            "clinical_events.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "event_id",
+          "hospital_id"
+        ]
+      ],
+      "indexes": []
+    },
+    "review_items": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "event_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "revision",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "hospital_id"
+          ],
+          "references": [
+            "hospitals.id"
+          ]
+        },
+        {
+          "columns": [
+            "event_id"
+          ],
+          "references": [
+            "clinical_events.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "event_id",
+          "hospital_id"
+        ]
+      ],
+      "indexes": [
+        {
+          "name": "ix_review_items_hospital_id",
+          "columns": [
+            "hospital_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_review_items_event_id",
+          "columns": [
+            "event_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "review_decisions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "review_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "user_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "decision",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "note",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "references": [
+            "users.id"
+          ]
+        },
+        {
+          "columns": [
+            "review_id"
+          ],
+          "references": [
+            "review_items.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": [
+        {
+          "name": "ix_review_decisions_review_id",
+          "columns": [
+            "review_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "clinical_conflicts": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "record_ids",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "category",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "differences",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "explanation",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "detected_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "active",
+          "type": "Boolean",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "patient_id"
+          ],
+          "references": [
+            "patient_links.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": [
+        {
+          "name": "ix_clinical_conflicts_patient_id",
+          "columns": [
+            "patient_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "audit_events": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "user_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "action",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "hospital_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "user_id"
+          ],
+          "references": [
+            "users.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": []
+    }
+  },
+  "local": {
+    "patients": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "birth_date",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "synthetic",
+          "type": "Boolean",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [],
+      "unique": [],
+      "indexes": []
+    },
+    "local_users": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "display_name",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [],
+      "unique": [],
+      "indexes": []
+    },
+    "clinical_records": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "category",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "state",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "author",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "patient_id"
+          ],
+          "references": [
+            "patients.id"
+          ]
+        }
+      ],
+      "unique": [],
+      "indexes": [
+        {
+          "name": "ix_clinical_records_patient_id",
+          "columns": [
+            "patient_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "clinical_record_versions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "record_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "event_type",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "author",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "occurred_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "record_id"
+          ],
+          "references": [
+            "clinical_records.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "record_id",
+          "version"
+        ]
+      ],
+      "indexes": [
+        {
+          "name": "ix_clinical_record_versions_record_id",
+          "columns": [
+            "record_id"
+          ],
+          "unique": false
+        }
+      ]
+    },
+    "outbox_events": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "String",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "record_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "patient_id",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "category",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "source_version",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "event_type",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "author",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "occurred_at",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "lineage",
+          "type": "JSON",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "state",
+          "type": "String",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "retry_count",
+          "type": "Integer",
+          "primary_key": false,
+          "nullable": false
+        },
+        {
+          "name": "last_error",
+          "type": "String",
+          "primary_key": false,
+          "nullable": true
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "record_id"
+          ],
+          "references": [
+            "clinical_records.id"
+          ]
+        },
+        {
+          "columns": [
+            "patient_id"
+          ],
+          "references": [
+            "patients.id"
+          ]
+        }
+      ],
+      "unique": [
+        [
+          "record_id",
+          "source_version"
+        ]
+      ],
+      "indexes": []
+    }
+  }
+}
