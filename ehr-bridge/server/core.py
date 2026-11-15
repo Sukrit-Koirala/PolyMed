@@ -8,6 +8,7 @@ from datetime import datetime,timedelta,timezone
 from fastapi import HTTPException
 from .adapters import ADAPTERS, changes
 from .db import HOSPITALS
+from .fhir import normalize_bundle
 
 def now():return datetime.now(timezone.utc).isoformat(timespec='microseconds')
 def expiry(**kwargs):return (datetime.now(timezone.utc)+timedelta(**kwargs)).isoformat(timespec='microseconds')
@@ -45,12 +46,20 @@ def file_payload(value):
     name=''.join(ch for ch in name if ch.isprintable() and ch not in ('"',';'))[:160] or 'attachment'
     return {'id':uid('file-'),'name':name,'mime':mime,'content':content,'sha256':hashlib.sha256(content).hexdigest(),'size':len(content)}
 
-def append_visit(c,actor,patient_id,native,new_files=None,visit_id=None,expected=None,retain=None):
+def append_visit(c,actor,patient_id,native,new_files=None,visit_id=None,expected=None,retain=None,fhir_patient_confirmed=False):
     hospital=actor['hospital_id'];patient=c.execute('SELECT * FROM patients WHERE id=?',(patient_id,)).fetchone()
     if not patient:raise HTTPException(404,'Patient not found')
-    try:
-        canonical=ADAPTERS[HOSPITALS[hospital]['format']].normalize(native,patient_id)
-    except (ValueError,TypeError,KeyError,AttributeError):raise HTTPException(422,'Native payload does not match the selected patient or the hospital mock format') from None
+    if native.get('resourceType'):
+        if not fhir_patient_confirmed:raise HTTPException(422,'Confirm the FHIR source patient mapping before importing')
+        try:canonical,source_uri=normalize_bundle(native,patient)
+        except ValueError as error:raise HTTPException(422,str(error)) from None
+        except (TypeError,KeyError,AttributeError,IndexError):raise HTTPException(422,'Invalid or unsupported FHIR R4 Patient/Observation bundle') from None
+        link=c.execute('SELECT patient_id FROM external_patient_links WHERE source_uri=?',(source_uri,)).fetchone()
+        if link and link['patient_id']!=patient_id:raise HTTPException(409,'This source patient is already linked to another patient profile')
+        c.execute('INSERT OR IGNORE INTO external_patient_links VALUES(?,?)',(source_uri,patient_id))
+    else:
+        try:canonical=ADAPTERS[HOSPITALS[hospital]['format']].normalize(native,patient_id)
+        except (ValueError,TypeError,KeyError,AttributeError):raise HTTPException(422,'Native payload does not match the selected patient or the hospital mock format') from None
     previous=None
     if visit_id:
         visit=c.execute('SELECT * FROM visits WHERE id=? AND hospital_id=? AND patient_id=?',(visit_id,hospital,patient_id)).fetchone()
@@ -89,7 +98,8 @@ def view_version(row,connection=None):
     for key in ('native','original','canonical','changes','files','preserved'):
         if key+'_json' in result:result[key]=json.loads(result.pop(key+'_json'))
     result['hospital_name']=HOSPITALS[result.get('hospital_id',result.get('source_hospital'))]['name']
-    result['source_format']=HOSPITALS[result.get('hospital_id',result.get('source_hospital'))]['format']
+    original=result.get('original',result.get('native',{}))
+    result['source_format']='FHIR R4' if original.get('resourceType')=='Bundle' else HOSPITALS[result.get('hospital_id',result.get('source_hospital'))]['format']
     result['id']=result.get('version_id',result.get('id'))
     if connection is not None and 'version_id' in result:
         files={f['id']:f for f in result['files']}

@@ -2,6 +2,8 @@
 
 A fresh, local prototype for the hospital/patient flow: identify a patient, upload a visit, ask for outside records, get patient approval with an OTP, and copy the approved records into the requesting hospital's separate database.
 
+**Official EHR sandbox test:** [Try the downloaded Oracle FHIR R4 sample](demo-reports/oracle-sandbox/README.md). The upload dialog now accepts a supported Patient/Observation FHIR collection through **FHIR R4**. Hospital destination formats remain simulated.
+
 This project is isolated in `ehr-bridge/`. It uses ports **3200** and **8200**, its own cookie, and its own data. Existing projects elsewhere in this workspace are untouched.
 
 ## Run on Windows
@@ -106,7 +108,7 @@ Attachments: up to 4 new files per upload, 5 MiB per file, 10 MiB combined new b
 
 ## Scope and additions to consider
 
-This is a **local prototype using fictional data**. Epic/Oracle names describe deliberately simplified mock adapters; there is no live vendor API connection, official schema compatibility, or production compliance claim. Notifications are in-app and refresh every five seconds; no SMS/email is sent. Local database files and backups are not encrypted.
+This is a **local prototype using fictional data**, including official Oracle sandbox test resources. Epic/Oracle hospital destinations use deliberately simplified mock adapters. A narrow FHIR R4 Patient/Observation import is supported; full FHIR profile validation and authenticated writes to live hospital EHRs are not implemented. The separate fixture downloader reads Oracle's public sandbox. Notifications are in-app and refresh every five seconds; no SMS/email is sent. Local database files and backups are not encrypted.
 
 Before expanding the demonstration or using real information, decide these product gaps:
 

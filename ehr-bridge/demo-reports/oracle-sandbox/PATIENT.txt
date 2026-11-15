@@ -1,0 +1,9 @@
+Oracle sandbox test patient
+Name: TIM PETERS
+Date of birth: 1990-09-15
+Source patient: https://fhir-open.cerner.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Patient/12742400
+
+Register this test patient at Valley Medical and use the newly issued patient ID.
+Upload upload-bundle.fhir.json using Upload visit > FHIR R4.
+Confirm the source patient mapping. Do not upload it to Sarah.
+Activate the new patient account to demonstrate OTP sharing with Memorial.

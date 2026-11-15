@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS files(id TEXT PRIMARY KEY,patient_id TEXT NOT NULL RE
 CREATE TABLE IF NOT EXISTS requests(id TEXT PRIMARY KEY,patient_id TEXT NOT NULL REFERENCES patients(id),hospital_id TEXT NOT NULL REFERENCES hospitals(id),doctor_id TEXT NOT NULL REFERENCES accounts(id),purpose TEXT NOT NULL,sources_json TEXT NOT NULL,version_ids_json TEXT NOT NULL,include_images INTEGER NOT NULL,state TEXT NOT NULL,created_at TEXT NOT NULL,expires_at TEXT NOT NULL,code_hash TEXT,code_expires TEXT,attempts INTEGER NOT NULL DEFAULT 0,completed_at TEXT);
 CREATE TABLE IF NOT EXISTS transfers(id TEXT PRIMARY KEY,request_id TEXT UNIQUE NOT NULL REFERENCES requests(id),patient_id TEXT NOT NULL REFERENCES patients(id),hospital_id TEXT NOT NULL REFERENCES hospitals(id),doctor_id TEXT NOT NULL REFERENCES accounts(id),version_count INTEGER NOT NULL,file_count INTEGER NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS upload_receipts(id TEXT PRIMARY KEY,body_hash TEXT NOT NULL,result_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS external_patient_links(source_uri TEXT PRIMARY KEY,patient_id TEXT NOT NULL REFERENCES patients(id));
 CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY AUTOINCREMENT,actor_id TEXT NOT NULL,patient_id TEXT,hospital_id TEXT,action TEXT NOT NULL,target TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS versions_patient ON versions(patient_id);
 CREATE INDEX IF NOT EXISTS requests_patient ON requests(patient_id,created_at);
@@ -63,7 +64,7 @@ class Database:
     def initialize(self):
         with sqlite3.connect(self.path) as c:
             c.executescript(SCHEMA)
-            for table in ('versions', 'files', 'transfers', 'audit'):
+            for table in ('versions', 'files', 'transfers', 'audit', 'external_patient_links'):
                 for action in ('UPDATE', 'DELETE'):
                     c.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{action.lower()} BEFORE {action} ON {table} BEGIN SELECT RAISE(ABORT, 'History is append-only'); END")
         for hospital in HOSPITALS:

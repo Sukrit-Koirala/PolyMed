@@ -40,6 +40,7 @@ class Attachment(Strict):
 class Upload(Strict):
     patient_id:str=Field(max_length=80)
     payload:dict
+    fhir_patient_confirmed:bool=False
     visit_id:str|None=Field(default=None,max_length=80)
     expected_version:int|None=Field(default=None,ge=1)
     files:list[Attachment]=Field(default_factory=list,max_length=4)
@@ -214,7 +215,7 @@ def create_app(directory=None,seed=True):
                 if receipt:
                     if receipt['body_hash']!=body_hash:raise HTTPException(409,'This upload key was already committed with different content. Open a new update.')
                     return json.loads(receipt['result_json'])
-            result=append_visit(c,user,body.patient_id,body.payload,files,body.visit_id,body.expected_version,body.retain_file_ids)
+            result=append_visit(c,user,body.patient_id,body.payload,files,body.visit_id,body.expected_version,body.retain_file_ids,body.fhir_patient_confirmed)
             if receipt_id:c.execute('INSERT INTO upload_receipts VALUES(?,?,?)',(receipt_id,body_hash,dump(result)))
             return result
     @app.get('/api/versions/{version_id}')

@@ -4,10 +4,10 @@ Checked on Windows with Python 3.14, Node 26.13.1, Microsoft Edge, and the locke
 
 ## Automated results
 
-- **Backend: 13 tests passed.** `..\.venv\Scripts\python.exe -m pytest tests -q`
+- **Backend: 16 tests passed.** `..\.venv\Scripts\python.exe -m pytest tests -q`
 - **Frontend production build passed.** `npm run build`
 - **TypeScript check passed.** `npm run typecheck`
-- **Browser: 4 scenarios passed against the production build.** `npm run test:e2e`, isolated dataset in `.data/e2e-production/`.
+- **Browser: 5 scenarios passed against the production build.** `npm run test:e2e`, latest isolated dataset in `.data/e2e-fhir-final/`.
 
 The backend suite checks:
 
@@ -37,3 +37,13 @@ The PowerShell seed wrapper and `run.ps1` were also executed successfully. The l
 The transfer uses an on-disk central database with an attached on-disk hospital database and rollback journals, rather than WAL. This is the local configuration in which SQLite supports transactions across attached databases; see the [SQLite ATTACH documentation](https://www.sqlite.org/lang_attach.html). The failure-injection test covers the application's rollback behavior. It does not establish a distributed transaction guarantee for remote EHR systems or test power-loss recovery.
 
 These checks validate a local prototype. They do not validate real Epic/Oracle compatibility, clinical correctness of user-supplied information, DICOM interpretation, malware protection, or production security/compliance. All medical input used in testing is fictional.
+
+## Official Oracle FHIR sandbox check
+
+The fixture downloader performed successful HTTP GET requests against Oracle's documented public R4 sandbox for Patient `12742400` and Observation `L-209133576` (Potassium Level, LOINC `2823-3`, `4.4 mmol/L`). Original response bytes and their SHA-256 hashes are retained under `demo-reports/oracle-sandbox/`; both saved resource hashes were verified against `fetch-receipt.json`. A local FHIR collection Bundle contains the unchanged Patient and Observation resources.
+
+Three added backend tests verify the official fixture import and OTP transfer into a separate hospital database; preservation of original JSON, patient identity, LOINC, units and numeric value; explicit patient confirmation, matching name/DOB and source-URI binding; and rejection of unsupported resources, mismatched subjects, entered-in-error status, absent units, conflicting values, and grouped observations without partial writes.
+
+The fifth browser scenario registers the sandbox patient, imports the downloaded file using the FHIR R4 tab, activates that patient's account, requests records from another hospital, generates and redeems the OTP, and inspects the original FHIR and converted local format. The resulting screenshot is `.data/screenshots/oracle-fhir-conversion.png`.
+
+This checks a supported FHIR R4 quantity Observation mapping, rather than full FHIR profile/invariant conformance. The remote sandbox is used only for reads; the receiving hospital remains a local mock. No write to Oracle or Epic was attempted.

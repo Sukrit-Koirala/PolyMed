@@ -1,0 +1,24 @@
+{
+  "provider": "Oracle Health public sandbox",
+  "fhir_version": "4.0.1",
+  "fetched_at": "2026-11-15T09:32:07.825115+00:00",
+  "documentation": "https://docs.oracle.com/en/industries/health/millennium-platform-apis/mfrap/srv_root_url.html",
+  "requests": [
+    {
+      "url": "https://fhir-open.cerner.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Patient/12742400",
+      "status": 200,
+      "sha256_response_bytes": "757df3f4047bb6f275ffa811315e47e9633f1de4bbc0c5a7548a31ce6a6da164"
+    },
+    {
+      "url": "https://fhir-open.cerner.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Observation?patient=12742400&code=http%3A%2F%2Floinc.org%7C2823-3&category=laboratory&_count=5",
+      "status": 200,
+      "sha256_response_bytes": "d1def897502f9fec521f7e67d4e34b0867fa2329e416787a343907e81ec0dafa"
+    },
+    {
+      "url": "https://fhir-open.cerner.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Observation/L-209133576",
+      "status": 200,
+      "sha256_response_bytes": "05e0e662b90ef57b61893685570f86fcb877c37d3fab8bc63ff4426b2db4aacb"
+    }
+  ],
+  "scope": "Public test records; GET only. No remote writes."
+}

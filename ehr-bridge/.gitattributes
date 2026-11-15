@@ -1,1 +1,3 @@
 *.pdf binary
+demo-reports/oracle-sandbox/patient.fhir.json -text
+demo-reports/oracle-sandbox/observation.fhir.json -text
