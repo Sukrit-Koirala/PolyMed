@@ -57,6 +57,16 @@ Use a separate browser profile or an InPrivate window for the patient while a ho
 
 Knowing someone's ID alone cannot claim their account. Only the registering hospital can reissue activation for an **unenrolled** patient. Activation cannot reset an existing account's password.
 
+## Patient summary and field versions
+
+The patient dashboard displays a **Health summary** in plain language. Allergies, medications, measurements, visit details, additional clinical fields, and attachments each have **Show versions**. Lists expand/collapse using their dropdown; a medication's name, dose, unit, and frequency are shown as readable text. Nested additional information is labeled rather than displayed as JSON. The same summary is available when a hospital opens a patient profile.
+
+Each field's history combines every available hospital's stored snapshots and includes the complete field value, clinical date, doctor, hospital, and source version. Values are ordered by **clinical date**, then original source update time and version. A backdated report imported today does not replace a more recent clinical reading. The latest revision of a visit supplies that visit's current values; older revisions remain in the history. Observation labels differing only by case, camel case, or underscores are grouped; `BP` and `Blood pressure` share a history. No fuzzy clinical matching or unit conversion is performed.
+
+The summary shows the latest **reported** value from current visit revisions, rather than merging different hospitals' lists. Empty or missing data is labeled not documented and is not treated as a negative finding or proof of resolution. An observation-only FHIR import does not clear medication/allergy history. A field omitted by a later revision remains visible in history without resurrecting that visit's older value. Zero and false values are retained.
+
+**View source** opens the original source JSON on demand; the picker includes hospital records and their individual versions. Each field/history entry also links to its specific source. Raw integration metadata stays in this source view; clinical result status, interpretations, and reference ranges remain readable in the summary. The dashboard refreshes every five seconds and preserves list dropdown state. Patient access is read-only. Hospital summaries/history include only local records and approved transferred copies.
+
 ## Populate and reset demo data
 
 The app seeds **2 hospitals, 3 doctors, 8 patients, 9 visits, and 10 versions** by default. Sarah has records in both hospitals and a two-version Valley visit. Other seeded patients are unclaimed so you can demonstrate activation by issuing their code from the registering hospital's dashboard. No medical image is fabricated by the seed; upload a fictional image/report for that part of the demo.

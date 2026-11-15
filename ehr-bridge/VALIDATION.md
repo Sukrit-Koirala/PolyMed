@@ -7,7 +7,7 @@ Checked on Windows with Python 3.14, Node 26.13.1, Microsoft Edge, and the locke
 - **Backend: 16 tests passed.** `..\.venv\Scripts\python.exe -m pytest tests -q`
 - **Frontend production build passed.** `npm run build`
 - **TypeScript check passed.** `npm run typecheck`
-- **Browser: 5 scenarios passed against the production build.** `npm run test:e2e`, latest isolated dataset in `.data/e2e-fhir-final/`.
+- **Frontend checks passed: 8 summary-model tests and 6 browser scenarios.** Browser checks used the production build with an isolated dataset in `.data/e2e-patient-fields-final/`; model tests run through the same `npm run test:e2e` command.
 
 The backend suite checks:
 
@@ -47,3 +47,13 @@ Three added backend tests verify the official fixture import and OTP transfer in
 The fifth browser scenario registers the sandbox patient, imports the downloaded file using the FHIR R4 tab, activates that patient's account, requests records from another hospital, generates and redeems the OTP, and inspects the original FHIR and converted local format. The resulting screenshot is `.data/screenshots/oracle-fhir-conversion.png`.
 
 This checks a supported FHIR R4 quantity Observation mapping, rather than full FHIR profile/invariant conformance. The remote sandbox is used only for reads; the receiving hospital remains a local mock. No write to Oracle or Epic was attempted.
+
+## Patient dashboard and cross-hospital field history
+
+Eight focused model checks cover clinical-date ordering despite a newer upload timestamp, complete list snapshots from multiple hospitals, FHIR observations not clearing allergy/medication history, omitted values in newer source revisions, backdated visit corrections, nested additional fields/files/zero/false values, deduplication of repeated copies, and separate histories for different lab tests' reference ranges and statuses.
+
+The added browser scenario creates a 2025 Valley blood-pressure record, a current Memorial visit, an older report uploaded last, and a second Memorial version authored by a different doctor. While the patient dashboard stays open, it verifies the live update to `120/80 mmHg`, Apple/Almond allergy and Ibuprofen/Mouth wash medication dropdowns, preservation of dropdown state, readable nested fields, and no raw JSON in the default patient view. Field history includes every reading/source and source version, with the latest value first. Original payloads open only on View source. Mobile history is checked for overflow. The hospital view is separately checked to exclude an unapproved outside version.
+
+The existing official-FHIR browser scenario also checks its patient's plain-language observation card and absence of raw JSON in the summary. Screenshots were generated for the readable dashboard, blood-pressure history, and mobile history under `.data/screenshots/` and the desktop summary/history were visually inspected. No backend/schema or existing demo patient data changes were required for this display change.
+
+A separate read-only browser smoke against the ordinary development server verifies the summary, field history, source viewer, and mobile width with no browser runtime errors. The normal demo dataset is preserved; test uploads were made only to isolated test databases.
