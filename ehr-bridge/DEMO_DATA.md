@@ -57,7 +57,7 @@ From the workspace root:
 # Add new seeded profiles without changing existing charts:
 .\ehr-bridge\scripts\seed.ps1 -Patients 24
 
-# Stop EHR Bridge first, then replace its demo databases and save backups:
+# Stop Polymed first, then replace its demo databases and save backups:
 .\ehr-bridge\scripts\reset-demo.ps1 -Patients 8
 .\ehr-bridge\run.ps1
 ```

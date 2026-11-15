@@ -17,7 +17,7 @@ if ($Install) {
 if (-not (Test-Path -LiteralPath $nextPath)) { throw 'Run .\ehr-bridge\run.ps1 -Install to install frontend dependencies.' }
 foreach ($port in @(8200,3200)) {
     $probe=[System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback,$port)
-    try { $probe.Start() } catch { throw "Port $port is occupied. Stop the earlier EHR Bridge process in its terminal first." } finally { $probe.Stop() }
+    try { $probe.Start() } catch { throw "Port $port is occupied. Stop the earlier Polymed process in its terminal first." } finally { $probe.Stop() }
 }
 Push-Location -LiteralPath $projectPath
 try { & $pythonPath -m server.cli seed; if ($LASTEXITCODE -ne 0) { throw 'Could not prepare the demo database' } } finally { Pop-Location }
@@ -32,7 +32,7 @@ try {
         Start-Sleep -Milliseconds 200
     }
     if (-not $ready) { throw "API did not become healthy. Read $logPath\api-error.log" }
-    Write-Host 'EHR Bridge: http://127.0.0.1:3200 | API docs: http://127.0.0.1:8200/docs'
+    Write-Host 'Polymed: http://127.0.0.1:3200 | API docs: http://127.0.0.1:8200/docs'
     Write-Host 'Keep this terminal open. Ctrl+C stops this app. Existing projects on 3000/3100 are untouched.'
     Push-Location (Join-Path $projectPath 'web')
     try { & $nodePath $nextPath dev --hostname 127.0.0.1 --port 3200 } finally { Pop-Location }

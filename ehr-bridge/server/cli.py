@@ -6,7 +6,7 @@ from .db import Database,ROOT
 from .seed import populate
 
 def main():
-    parser=argparse.ArgumentParser(description='Populate only this clean EHR Bridge prototype.')
+    parser=argparse.ArgumentParser(description='Populate only this clean Polymed prototype.')
     parser.add_argument('action',choices=['seed','reset','inspect'])
     parser.add_argument('--patients',type=int,default=8)
     parser.add_argument('--confirm',default='')
@@ -34,10 +34,10 @@ def main():
                     src.backup(dst)
                     if dst.execute('PRAGMA integrity_check').fetchone()[0]!='ok':raise RuntimeError('Backup validation failed; reset cancelled')
         print('Previous demo backed up to',backup)
-        (backup/'README.txt').write_text('EHR Bridge database backup before demo replacement\n'
+        (backup/'README.txt').write_text('Polymed database backup before demo replacement\n'
             +'Source directory: '+str(db.directory)+'\n'
             +'All existing SQLite backups passed PRAGMA integrity_check before replacement.\n'
-            +'To restore: stop EHR Bridge; copy central.sqlite3, memorial.sqlite3 and valley.sqlite3\n'
+            +'To restore: stop Polymed; copy central.sqlite3, memorial.sqlite3 and valley.sqlite3\n'
             +'from this backup directory to the source directory, then restart the app.\n',encoding='utf-8')
         for path in paths:
             if path.exists():path.unlink()

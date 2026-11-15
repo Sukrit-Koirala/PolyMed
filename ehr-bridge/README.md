@@ -1,4 +1,4 @@
-# EHR Bridge
+# Polymed
 
 A fresh, local prototype for the hospital/patient flow: identify a patient, upload a visit, ask for outside records, get patient approval with an OTP, and copy the approved records into the requesting hospital's separate database.
 

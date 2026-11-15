@@ -69,7 +69,7 @@ def create_app(directory=None,seed=True):
             from .seed import populate
             populate(db)
         yield
-    app=FastAPI(title='EHR Bridge — patient-controlled exchange',lifespan=lifespan)
+    app=FastAPI(title='Polymed — patient-controlled exchange',lifespan=lifespan)
     app.state.db=db
     attempts=defaultdict(deque)
     origins={'http://127.0.0.1:3200','http://localhost:3200','http://testserver'}
