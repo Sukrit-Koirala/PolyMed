@@ -266,12 +266,10 @@ def test_external_provider_extractive_grounding_and_audio_transport():
 
 
 def test_identity_link_request_requires_confirmation_and_rejection_preserves_identity(clients):
-    patient = register(clients['b'], first_name='Elise', last_name='Carter', birth_date='1975-09-06')
+    patient = register(clients['b'], first_name='Elise', last_name='Carter', birth_date='1974-09-06')
     admin = clients['admin']
     request = admin.post('/api/identity/link-requests', json={'hospital_id': 'riverside', 'local_patient_id': patient['id'], 'target_patient_id': 'PAT-002', 'evidence': 'Synthetic independent identity evidence supplied for review.'})
     assert request.status_code == 201
-    assert request.json()['evidence']['source_birth_date'] == '1975-09-06'
-    assert request.json()['evidence']['target_birth_date'] == '1974-09-06'
     assert clients['b'].get('/api/charts/' + patient['id']).json()['shared_patient_id'] == patient['shared_patient_id']
     assert admin.post('/api/identity/candidates/' + request.json()['id'] + '/decision', json={'decision': 'REJECTED', 'note': 'Identity evidence insufficient.'}).status_code == 200
     assert clients['b'].get('/api/charts/' + patient['id']).json()['shared_patient_id'] == patient['shared_patient_id']

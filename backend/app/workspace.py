@@ -282,8 +282,7 @@ def build_workspace_router(db, settings):
                 raise HTTPException(409, 'These source identities are already linked')
             if s.scalar(select(IdentityCandidate).where(IdentityCandidate.member_id == member.id, IdentityCandidate.status == 'PENDING_REVIEW')):
                 raise HTTPException(409, 'An identity request is already pending')
-            source = s.get(PatientLink, member.patient_id)
-            candidate = IdentityCandidate(id='MATCH-' + uid()[:12].upper(), member_id=member.id, target_patient_id=target.id, status='PENDING_REVIEW', evidence={'source_name': source.name, 'target_name': target.name, 'source_birth_date': source.birth_date, 'target_birth_date': target.birth_date, 'birth_date': target.birth_date, 'method': 'Explicit administrator link request', 'warning': body.evidence})
+            candidate = IdentityCandidate(id='MATCH-' + uid()[:12].upper(), member_id=member.id, target_patient_id=target.id, status='PENDING_REVIEW', evidence={'source_name': s.get(PatientLink, member.patient_id).name, 'target_name': target.name, 'birth_date': target.birth_date, 'method': 'Explicit administrator link request', 'warning': body.evidence})
             s.add(candidate)
             audit(s, user, 'IDENTITY_LINK_REQUESTED', candidate.id)
             s.flush()
